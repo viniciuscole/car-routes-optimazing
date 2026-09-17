@@ -26,6 +26,13 @@ int main(int argc, char *argv[])
 
   read_file_header(&node_amount, &edge_amount, &main_src_node, &main_dest_node, &intial_velocity, file);
   AdjList **adjacency_vector = read_edges(file, node_amount, edge_amount, intial_velocity);
+  if (!adjacency_vector) {
+    fprintf(stderr, "error: invalid edge list\n");
+    fclose(file);
+    free(input_file);
+    free(output_file);
+    return 1;
+  }
   Update *velocity_updates = read_updates(file, &updates_amount);
 
   // print_list_vector(adjacency_vector, node_amount);

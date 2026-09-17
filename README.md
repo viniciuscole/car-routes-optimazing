@@ -27,7 +27,8 @@ make
 ```
 
 `output.txt` gets three lines: the path (node ids separated by `;`), the
-distance in km, and the time as `hh:mm:ss.ffffff`.
+distance in km, and the time as `hh:mm:s.ffffff` — hours and minutes are
+zero-padded, but seconds are not (e.g. `00:03:0.000000`).
 
 ## Trace mode
 

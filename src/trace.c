@@ -24,7 +24,7 @@ static void on_done(double clock, double km) { printf("done %.3f %.3f\n", clock,
 static void print_graph_edge(Adj adj, void *ctx)
 {
     int from = *(int *)ctx;
-    double kmh = get_distance(adj) / get_time(adj) * 3.6;
+    double kmh = get_time(adj) > 0 ? get_distance(adj) / get_time(adj) * 3.6 : 0;
     printf("edge %d %d %.0f %.3f\n", from, get_node_id(adj), get_distance(adj), kmh);
 }
 
@@ -36,11 +36,16 @@ int run_trace(const char *input)
     int node_amount = 0, edge_amount = 0, updates_amount = 0, src = 0, dest = 0;
     double velocity = 0;
     read_file_header(&node_amount, &edge_amount, &src, &dest, &velocity, file);
-    if (node_amount <= 0 || edge_amount < 0 || src < 1 || src > node_amount || dest < 1 || dest > node_amount || velocity <= 0) {
+    if (node_amount <= 0 || edge_amount < 0 || src < 1 || src > node_amount || dest < 1 || dest > node_amount || velocity <= 0 ||
+        node_amount > 1000000 || edge_amount > 1000000) {
         fclose(file);
         return 2;
     }
     AdjList **graph = read_edges(file, node_amount, edge_amount, velocity);
+    if (!graph) {
+        fclose(file);
+        return 3;
+    }
     Update *updates = read_updates(file, &updates_amount);
     fclose(file);
 

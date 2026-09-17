@@ -31,6 +31,7 @@ create_dir:
 
 # Compiling cpp files
 $(OBJ)/%.o: $(SRC)/%.c
+	@ mkdir -p $(OBJ)
 	@ echo $(YELLOW)
 	@ echo "Compiling file $<..."
 	@ $(COMPILER) -std=gnu99 -c $< -o $@

@@ -46,7 +46,11 @@ AdjList **read_edges(FILE *file, int node_amount, int edge_amount, double veloci
 
     for (int x = 0; x < edge_amount; x++)
     {
-        fscanf(file, "%d;%d;%lf\n", &src, &dest, &distance);
+        if (fscanf(file, "%d;%d;%lf\n", &src, &dest, &distance) != 3 ||
+            src < 1 || src > node_amount || dest < 1 || dest > node_amount) {
+            end_list_vector(list_vector, node_amount);
+            return NULL;
+        }
         adj = init_adj(dest, distance, calculate_weight(distance, velocity));
         list_push(list_vector[src - 1], adj);
     }

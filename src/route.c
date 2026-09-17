@@ -1,6 +1,7 @@
 #include "../include/route.h"
 #include "../include/algorithm.h"
 #include "../include/trace.h"
+#include <stdio.h>
 #include <stdlib.h>
 
 TraceHooks trace = {0};
@@ -53,9 +54,14 @@ void calculate_path(AdjList **adjacency_vector, Update* velocity_updates, int no
     }
     while(total_time[0] >= next_uptade_time)
     {
-      update_adj(adjacency_vector[get_src_node(velocity_updates[index_uptades])-1], get_src_node(velocity_updates[index_uptades]),
-                 get_dest_node(velocity_updates[index_uptades]), get_new_velocity(velocity_updates[index_uptades]));
-      if (trace.update) trace.update(get_src_node(velocity_updates[index_uptades]), get_dest_node(velocity_updates[index_uptades]), get_new_velocity(velocity_updates[index_uptades]), total_time[0]);
+      int from = get_src_node(velocity_updates[index_uptades]);
+      if (from < 1 || from > node_amount) {
+          fprintf(stderr, "warning: no edge %d->%d, update ignored\n", from, get_dest_node(velocity_updates[index_uptades]));
+      } else {
+          update_adj(adjacency_vector[from-1], from,
+                     get_dest_node(velocity_updates[index_uptades]), get_new_velocity(velocity_updates[index_uptades]));
+          if (trace.update) trace.update(from, get_dest_node(velocity_updates[index_uptades]), get_new_velocity(velocity_updates[index_uptades]), total_time[0]);
+      }
 
       index_uptades++;
       if(index_uptades == updates_amount) break;

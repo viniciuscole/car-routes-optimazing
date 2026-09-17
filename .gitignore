@@ -3,4 +3,5 @@ trab2
 saidas/
 entradas/
 test/*.out
-trace
+test/*.err
+/trace
