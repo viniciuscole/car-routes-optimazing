@@ -1,5 +1,6 @@
-test/
 obj/
 trab2
 saidas/
 entradas/
+test/*.out
+trace
