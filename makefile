@@ -2,12 +2,12 @@ EXECUTABLE       = trab2
 SRC              = ./src
 INCLUDE          = ./include
 OBJ              = ./obj
-FLAGS            = -lm -pedantic -Wall -g
+FLAGS            = -lm -pedantic -Wall -g -std=gnu99
 ADD_FLAGS        = -Wextra -O2
-COMPILER         = gcc   
+COMPILER         = gcc
 
 # Path and extesions
-C_FILES        = $(wildcard $(SRC)/*.c | $(SRC)/**/*.c)
+C_FILES        = $(filter-out $(SRC)/trace_main.c, $(wildcard $(SRC)/*.c | $(SRC)/**/*.c))
 OBJ_PATH_FILES = $(patsubst $(SRC)%,$(OBJ)%,$(C_FILES))
 OBJ_FILES      = $(patsubst %.c,%.o,$(OBJ_PATH_FILES))
 
@@ -30,18 +30,22 @@ create_dir:
 	@ echo $(RESET_COLOR)
 
 # Compiling cpp files
-$(OBJ)/%.o: $(SRC)/%.c 
+$(OBJ)/%.o: $(SRC)/%.c
 	@ echo $(YELLOW)
 	@ echo "Compiling file $<..."
-	@ $(COMPILER) -c $< -o $@
+	@ $(COMPILER) -std=gnu99 -c $< -o $@
 	@ echo $(RESET_COLOR)
 
 # Creating executable
-$(EXECUTABLE): 
+$(EXECUTABLE):
 	@ echo $(YELLOW)
 	@ echo "Creating executable..."
 	@ $(COMPILER) $< $(OBJ)/*.o -o $@ $(FLAGS)
 	@ echo $(RESET_COLOR)
+
+# Creating trace executable
+trace: $(OBJ_FILES)
+	@ $(COMPILER) $(SRC)/trace_main.c $(filter-out $(OBJ)/main.o, $(OBJ_FILES)) -o trace $(FLAGS)
 
 # Cleaning workspace
 clean:

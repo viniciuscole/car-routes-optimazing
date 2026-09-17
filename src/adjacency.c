@@ -78,6 +78,12 @@ void list_traversal(AdjList *list, ListCallback callback, int v_id, int *visited
     }
 }
 
+void list_for_each(AdjList *list, void (*fn)(Adj adj, void *ctx), void *ctx)
+{
+    for (Cell *cell = list->first; cell != NULL; cell = cell->next)
+        fn(cell->adj, ctx);
+}
+
 void list_push(AdjList *list, Adj adj)
 {
 

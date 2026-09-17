@@ -25,6 +25,7 @@ typedef void (*ListCallback)(Adj, int, int *, double *, double *, PQ, int *);
 AdjList *init_list();
 void list_push(AdjList *list, Adj adj);
 void list_traversal(AdjList *list, ListCallback callback, int v_id, int *visited, double *dist, double *time, PQ pq, int *path);
+void list_for_each(AdjList *list, void (*fn)(Adj adj, void *ctx), void *ctx);
 void end_list(AdjList *list);
 void end_list_vector(AdjList **vector, int size);
 void print_list(AdjList *list);
