@@ -3,6 +3,7 @@
 #include "../include/adjacency.h"
 #include "../include/PQ.h"
 #include "../include/util.h"
+#include "../include/trace.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -50,7 +51,9 @@ void dijkstra(AdjList **graph, int node_amount, int main_src_node, int main_dest
     {
         Adj v = PQ_delmin(pq);
         int v_id = id(v);
+        if (visited[v_id]) continue;
         visited[v_id] = 1;
+        if (trace.pop) trace.pop(v_id, time[v_id]);
 
         AdjList *list = graph[v_id - 1];
 
@@ -72,6 +75,8 @@ void dijkstra(AdjList **graph, int node_amount, int main_src_node, int main_dest
         path[i] = pathArray[i];
     }
     // path can be acessed in main function
+
+    if (trace.plan) trace.plan(path, *path_length, time[main_dest_node]);
 
     PQ_finish(pq);
 }
@@ -100,6 +105,7 @@ void updateDistanceCallback(Adj adj, int v_id, int *visited, double *dist, doubl
             dist[w_id] = dist[v_id] + dist(adj);
 
             path[w_id] = v_id;
+            if (trace.relax) trace.relax(v_id, w_id, time[w_id]);
             PQ_insert(pq, init_adj(w_id, dist[w_id], time[w_id]));
         }
     }
