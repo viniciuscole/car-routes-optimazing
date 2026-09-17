@@ -38,7 +38,7 @@ void dijkstra(AdjList **graph, int node_amount, int main_src_node, int main_dest
 
     // Initializing priority queue
     PQ pq = (PQ)malloc(sizeof(struct priority_queue));
-    PQ_init(pq, edge_amount);
+    PQ_init(pq, edge_amount > node_amount ? edge_amount : node_amount);
     // Setting main source node distance to 0
 
     dist[main_src_node] = 0;

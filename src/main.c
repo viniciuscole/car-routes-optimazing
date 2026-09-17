@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include "../include/route.h"
 
 char* format_time(double total_time);
@@ -66,9 +67,11 @@ void  write_output(FILE *out_file, double total_time, double total_distance, int
 
 char* format_time(double total_time)
 {
-  int hours = total_time / 3600;
-  int minutes = ((int)total_time % 3600) / 60;
-  double seconds = total_time - (hours * 3600) - (minutes * 60);
+  total_time = floor(total_time * 1000.0 + 0.5) / 1000.0;
+  int whole = (int)floor(total_time);
+  int hours = whole / 3600;
+  int minutes = (whole % 3600) / 60;
+  double seconds = total_time - hours * 3600 - minutes * 60;
   char string_total_time[100];
   sprintf(string_total_time, "%02d:%02d:%f", hours, minutes, seconds);
   char* formated_time = strdup(string_total_time);

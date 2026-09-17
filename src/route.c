@@ -23,6 +23,13 @@ void calculate_path(AdjList **adjacency_vector, Update* velocity_updates, int no
     if (trace.replan) trace.replan(path[path_length[0]], total_time[0]);
     dijkstra(adjacency_vector, node_amount, path[path_length[0]], main_dest_node, temporary_path, &distanceTravelled, &timeTravelled, edge_amount, &temp_path_length);
 
+    if (temp_path_length == 1 && path[path_length[0]] != main_dest_node)
+    {
+      if (trace.unreachable) trace.unreachable(path[path_length[0]], total_time[0]);
+      free(temporary_path);
+      return;
+    }
+
     double next_uptade_time = get_instant_time(velocity_updates[index_uptades]);
 
     int index_temporary_path = 1;
@@ -46,8 +53,8 @@ void calculate_path(AdjList **adjacency_vector, Update* velocity_updates, int no
     }
     while(total_time[0] >= next_uptade_time)
     {
-      update_adj(adjacency_vector[get_src_node(velocity_updates[index_uptades])-1], get_dest_node(velocity_updates[index_uptades]),
-                 get_new_velocity(velocity_updates[index_uptades]));
+      update_adj(adjacency_vector[get_src_node(velocity_updates[index_uptades])-1], get_src_node(velocity_updates[index_uptades]),
+                 get_dest_node(velocity_updates[index_uptades]), get_new_velocity(velocity_updates[index_uptades]));
       if (trace.update) trace.update(get_src_node(velocity_updates[index_uptades]), get_dest_node(velocity_updates[index_uptades]), get_new_velocity(velocity_updates[index_uptades]), total_time[0]);
 
       index_uptades++;
@@ -59,6 +66,13 @@ void calculate_path(AdjList **adjacency_vector, Update* velocity_updates, int no
   // No updates left
   if (trace.replan) trace.replan(path[path_length[0]], total_time[0]);
   dijkstra(adjacency_vector, node_amount, path[path_length[0]], main_dest_node, temporary_path, &distanceTravelled, &timeTravelled, edge_amount, &temp_path_length);
+
+  if (temp_path_length == 1 && path[path_length[0]] != main_dest_node)
+  {
+    if (trace.unreachable) trace.unreachable(path[path_length[0]], total_time[0]);
+    free(temporary_path);
+    return;
+  }
 
   int index_temporary_path = 1;
   while(path[path_length[0]] != main_dest_node)

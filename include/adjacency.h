@@ -32,7 +32,7 @@ void print_list(AdjList *list);
 void print_list_vector(AdjList **vector, int size);
 void free_list(AdjList *list);
 Adj find_adj_list(AdjList *list, int node_id);
-void update_adj(AdjList *list, int node_id, double new_velocity);
+void update_adj(AdjList *list, int src_id, int node_id, double new_velocity);
 
 
 #define id(A) (A.node_id)                   // return node identifier

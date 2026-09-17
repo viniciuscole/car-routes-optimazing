@@ -61,30 +61,31 @@ Update *read_updates(FILE *file, int *updates_amount)
     long file_seek = ftell(file);
 
     // Counting number of updates to allocate memory
-    int line_count = 0;
-    char aux[50];
-    while (!feof(file))
+    int line_count = 0, c, at_line_start = 1;
+    while ((c = fgetc(file)) != EOF)
     {
-        fscanf(file, "%[^\n]\n", aux);
-        line_count++;
+        if (at_line_start && c != '\n') line_count++;
+        at_line_start = (c == '\n');
     }
-
-    // Assigning value of updates amount
-    *updates_amount = line_count;
 
     // Reseting seek after counting
     fseek(file, file_seek, SEEK_SET);
 
+    // Assigning value of updates amount
+    *updates_amount = line_count;
+
     // Reading updates
-    Update *updates = malloc(sizeof(Update) * line_count);
+    Update *updates = malloc(sizeof(Update) * (line_count > 0 ? line_count : 1));
     int src_node, dest_node;
     double instant_time, new_velocity;
-    int i = 0;
-    while (!feof(file))
+    for (int i = 0; i < line_count; i++)
     {
-        fscanf(file, "%lf;%d;%d;%lf\n", &instant_time, &src_node, &dest_node, &new_velocity);
+        if (fscanf(file, "%lf;%d;%d;%lf\n", &instant_time, &src_node, &dest_node, &new_velocity) != 4)
+        {
+            *updates_amount = i;
+            break;
+        }
         updates[i] = init_update(src_node, dest_node, instant_time, new_velocity);
-        i++;
     }
     return updates;
 }

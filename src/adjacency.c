@@ -157,17 +157,22 @@ void print_list_vector(AdjList **vector, int size)
 Adj find_adj_list(AdjList *list, int node_id)
 {
     Cell *cell = list->first;
-    while(node_id != get_node_id(cell->adj)){
+    while (cell && node_id != get_node_id(cell->adj)) {
         cell = cell->next;
     }
+    if (!cell) return init_adj(0, 0, 0);
     return cell->adj;
 }
 
-void update_adj(AdjList *list, int node_id, double new_velocity)
+void update_adj(AdjList *list, int src_id, int node_id, double new_velocity)
 {
     Cell *cell = list->first;
-    while(node_id != get_node_id(cell->adj)){
+    while (cell && node_id != get_node_id(cell->adj)) {
         cell = cell->next;
+    }
+    if (!cell) {
+        fprintf(stderr, "warning: no edge %d->%d, update ignored\n", src_id, node_id);
+        return;
     }
     cell->adj = set_time(cell->adj, new_velocity);
 }

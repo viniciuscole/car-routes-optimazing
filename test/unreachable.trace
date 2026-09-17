@@ -1,0 +1,8 @@
+graph 3 1
+edge 1 2 1000 60.000
+replan 1 0.000
+pop 1 0.000
+relax 1 2 60.000
+pop 2 60.000
+plan 3 unreachable
+unreachable 1 0.000
